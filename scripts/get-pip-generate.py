@@ -155,8 +155,11 @@ def main():
         pkgtext.append(pkg.textify())
     injection = "\n".join(pkgtext)
 
+    import os.path
+    scripts_dir = os.path.dirname(__file__)
+    template_file = os.path.join(scripts_dir, "get-pip-template.py")
     with open("get-pip-py26.py", "w") as fd1:
-        with open("get-pip-template.py", "r") as fd2:
+        with open(template_file, "r") as fd2:
             for line2 in fd2:
                 if line2 != "PACKAGES = {}\n":
                     fd1.write(line2)
