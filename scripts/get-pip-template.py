@@ -148,6 +148,7 @@ def main():
 
     tmpdir = None
     curdir = os.getcwd()
+    force_args = ["-I", "--no-deps"]
 
     try:
 
@@ -160,9 +161,8 @@ def main():
         sys.path.insert(0, tmpdir)
 
         # Install `pip`, `wheel` and `setuptools`.
-        args = ["-I", "--no-deps"]
         for pkg in ("pip", "argparse", "wheel", "setuptools"):
-            pip_autoinstall(pkg, *args)
+            pip_autoinstall(pkg, *force_args)
 
         # Delete temporary `pip` and `wheel` and reload the installed ones.
         sys.path.pop(0)
@@ -176,7 +176,7 @@ def main():
 
         # Install `enum34` and its dependencies.
         for pkg in ("ordereddict", "enum34"):
-            pip_autoinstall(pkg)
+            pip_autoinstall(pkg, *force_args)
 
         # Install `cryptography` dependencies.
         for pkg in ("six", "asn1crypto", "idna", "ipaddress"):
