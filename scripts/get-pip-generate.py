@@ -1,6 +1,115 @@
 #! /usr/bin/env python
 
 
+class RemotePackage(object):
+    """Wrapper class for Python packages coming from PyPI."""
+
+    REMOTE = "https://files.pythonhosted.org/packages"
+
+    def __init__(self, filename):
+        """Create a new instance from a Python package filename."""
+
+        self.filename = filename
+        self.data = None
+
+    @property
+    def name(self):
+        """Python package name."""
+
+        nsuffixes = 1 + int(self.filename.endswith(".tar.gz"))
+        base = self.filename.rsplit(".", nsuffixes)[0]
+        return self.filename.split("-")[0]
+
+    @property
+    def version(self):
+        """Python package version in string format."""
+
+        nsuffixes = 1 + int(self.filename.endswith(".tar.gz"))
+        base = self.filename.rsplit(".", nsuffixes)[0]
+        return base.split("-")[1]
+
+    @property
+    def url(self):
+        """Python package remote url from the PyPI repository."""
+
+        import re
+        try:
+            from urllib.request import urlopen
+        except ImportError:
+            from urllib2 import urlopen
+
+        # Define some patterns.
+        urlpattern = "https://pypi.org/project/{0}/{1}/#files"
+        rowpattern = ".*<a href=\"(.*{0}.*)\">".format(
+            self.filename.replace(".", "\\."))
+
+        # Parse the download page from PyPI to get the package url.
+        conn = urlopen(urlpattern.format(self.name, self.version))
+        try:
+            htmlpage = conn.read().decode("utf-8").splitlines()
+        finally:
+            conn.close()
+
+        for htmlrow in htmlpage:
+            match = re.match(rowpattern, htmlrow)
+            if match:
+                return match.group(1)
+        msg = "no url found for package {0}".format(self.filename)
+        raise ValueError(msg)
+
+    def download(self):
+        """Get the Python package as a :class:`bytes` object."""
+
+        try:
+            from urllib.request import urlopen
+        except ImportError:
+            from urllib2 import urlopen
+
+        conn = urlopen(self.url)
+        try:
+            self.data = conn.read()
+        finally:
+            conn.close()
+
+    def textify(self):
+        """Return the Python package data as plain encoded text."""
+
+        if self.data is None:
+            self.download()
+
+        return "\n".join([
+            "\"{name}\": {{",
+            "    \"filename\":",
+            "        \"{filename}\",",
+            "    \"filedata\": \"\"\"",
+            "{filedata}",
+            "    \"\"\",",
+            "}},"
+        ]).format(name=self.name,
+                  filename=self.filename,
+                  filedata=self.pkgencode(self.data))
+
+    @staticmethod
+    def pkgencode(data, pad=0, nchars=None):
+        """Return data string from a data stream using base64."""
+
+        spaces = " " * pad
+        if nchars is None:
+            nchars = 79 - pad
+
+        from base64 import b64encode
+        raw = b64encode(data).decode("utf-8")
+        lines = [raw[i:i + nchars] for i in range(0, len(raw), nchars)]
+        return "\n".join(["{0}{1}".format(spaces, line) for line in lines])
+
+    @staticmethod
+    def pkgdecode(text):
+        """Return data stream from a data string using base64."""
+
+        from base64 import b64decode
+        return b64decode("".join(line.strip() for line in text.split("\n")))
+
+
 class Package(object):
 
     REMOTE = "https://files.pythonhosted.org/packages"
