@@ -4,8 +4,6 @@
 class Package(object):
     """Wrapper class for Python packages coming from PyPI."""
 
-    REMOTE = "https://files.pythonhosted.org/packages"
-
     def __init__(self, filename):
         """Create a new instance from a Python package filename."""
 
