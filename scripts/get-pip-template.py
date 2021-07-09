@@ -95,13 +95,16 @@ def pip_autopatch():
 
     # Define files to patch.
     pip_fold = os.path.dirname(pip.__file__)
+    pyopenssl_file = os.path.join(pip_fold, "_vendor", "urllib3",
+                                  "contrib", "pyopenssl.py")
+
     pip_file = os.path.join(pip_fold, "__init__.py")
-    ssl_file = os.path.join(pip_fold, "_vendor", "urllib3",
-                            "contrib", "pyopenssl.py")
+    compat_file = os.path.join(pip_fold, "_vendor", "distlib", "compat.py")
+    sslimport_file = compat_file if os.path.exists(compat_file) else pip_file
 
     # Force `pip` to use `pyOpenSSL`.
     lines = []
-    with open(pip_file, "r") as fd:
+    with open(sslimport_file, "r") as fd:
         found_try = False
         for line in fd:
             if "try:" in line:
@@ -109,6 +112,7 @@ def pip_autopatch():
             elif found_try and "import ssl" in line:
                 indent = line[:len(line) - len(line.lstrip())]
                 injection = [
+                    "import warnings",
                     "with warnings.catch_warnings():",
                     "    warnings.simplefilter(\"ignore\", category=DeprecationWarning)",
                     "    from pip._vendor.urllib3.contrib import pyopenssl",
@@ -121,17 +125,17 @@ def pip_autopatch():
             else:
                 found_try = False
             lines.append(line)
-    with open(pip_file, "w") as fd:
+    with open(sslimport_file, "w") as fd:
         fd.writelines(lines)
 
     # Patch issue with unicode/bytes mix in `pyopenssl`.
     lines = []
-    with open(ssl_file, "r") as fd:
+    with open(pyopenssl_file, "r") as fd:
         text = "return self.connection.send(data)"
         for line in fd:
             lines.append(line.replace("data", "data.encode()")
                          if text in line else line)
-    with open(ssl_file, "w") as fd:
+    with open(pyopenssl_file, "w") as fd:
         fd.writelines(lines)
 
 
