@@ -109,44 +109,62 @@ class Package(object):
 
 
 def main():
+    """Main script function."""
 
-    PACKAGES = [
-        # Essential packages (`pip`, `wheel` and `setuptools`).
-        Package("pip-9.0.3-py2.py3-none-any.whl"),
-        Package("argparse-1.4.0-py2.py3-none-any.whl"),
-        Package("wheel-0.29.0-py2.py3-none-any.whl"),
-        Package("setuptools-36.8.0-py2.py3-none-any.whl"),
-        # `cffi` and dependencies (for `cryptography`).
-        Package("pycparser-2.18.tar.gz"),
-        Package("cffi-1.11.2-cp26-cp26mu-manylinux1_x86_64.whl"),
-        # `enum34` and dependencies (for `cryptography`).
-        Package("ordereddict-1.1.tar.gz"),
-        Package("enum34-1.1.10.tar.gz"),
-        # `cryptography` and its remaining dependencies.
-        Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
-        Package("idna-2.7-py2.py3-none-any.whl"),
-        Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
-        Package("cryptography-2.1.1-cp26-cp26mu-manylinux1_x86_64.whl"),
-        # `pyOpenSSL` and its remaining dependencies.
-        Package("six-1.13.0-py2.py3-none-any.whl"),
-        Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
-    ]
+    import os.path
+    import argparse
+
+    # Define arguments.
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--version", type=str, help="Python version", required=True)
+
+    # Parse arguments.
+    args = parser.parse_args()
+    version = args.version
+
+    if version == "2.6":
+        PACKAGES = [
+            # Essential packages (`pip`, `wheel` and `setuptools`).
+            Package("pip-9.0.3-py2.py3-none-any.whl"),
+            Package("argparse-1.4.0-py2.py3-none-any.whl"),
+            Package("wheel-0.29.0-py2.py3-none-any.whl"),
+            Package("setuptools-36.8.0-py2.py3-none-any.whl"),
+            # `cffi` and dependencies (for `cryptography`).
+            Package("pycparser-2.18.tar.gz"),
+            Package("cffi-1.11.2-cp26-cp26mu-manylinux1_x86_64.whl"),
+            # `enum34` and dependencies (for `cryptography`).
+            Package("ordereddict-1.1.tar.gz"),
+            Package("enum34-1.1.10.tar.gz"),
+            # `cryptography` and its remaining dependencies.
+            Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
+            Package("idna-2.7-py2.py3-none-any.whl"),
+            Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
+            Package("cryptography-2.1.1-cp26-cp26mu-manylinux1_x86_64.whl"),
+            # `pyOpenSSL` and its remaining dependencies.
+            Package("six-1.13.0-py2.py3-none-any.whl"),
+            Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
+        ]
+    else:
+        msg = "unsupported Python version '{0}'".format(version)
+        raise ValueError(msg)
 
     pkgtext = []
     for pkg in PACKAGES:
         pkgtext.append(pkg.textify())
     injection = "\n".join(pkgtext)
 
-    import os.path
     scripts_dir = os.path.dirname(__file__)
     template_file = os.path.join(scripts_dir, "get-pip-template.py")
-    with open("get-pip-py2.6.py", "w") as fd1:
+    with open("get-pip-py{0}.py".format(version), "w") as fd1:
         with open(template_file, "r") as fd2:
             for line2 in fd2:
-                if line2 != "PACKAGES = {}\n":
-                    fd1.write(line2)
-                else:
+                if line2 == "#! /usr/bin/env python\n":
+                    fd1.write("#! /usr/bin/env python{0}\n".format(version))
+                elif line2 == "PACKAGES = {}\n":
                     fd1.write("PACKAGES = {{\n\n{0}\n\n}}\n".format(injection))
+                else:
+                    fd1.write(line2)
 
 
 if __name__ == "__main__":
