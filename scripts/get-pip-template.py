@@ -173,7 +173,8 @@ def main():
 
         # Install `enum34` and its dependencies.
         for pkg in ("ordereddict", "enum34"):
-            pip_autoinstall(pkg, *force_args)
+            if pkg in PACKAGES:
+                pip_autoinstall(pkg, *force_args)
 
         # Install `cryptography` dependencies.
         for pkg in ("six", "asn1crypto", "idna", "ipaddress"):
