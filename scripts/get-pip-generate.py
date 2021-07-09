@@ -135,7 +135,7 @@ def main():
             Package("cffi-1.11.2-cp26-cp26mu-manylinux1_x86_64.whl"),
             # `enum34` and dependencies (for `cryptography`).
             Package("ordereddict-1.1.tar.gz"),
-            Package("enum34-1.1.10.tar.gz"),
+            Package("enum34-1.1.10-py2-none-any.whl"),
             # `cryptography` and its remaining dependencies.
             Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
             Package("idna-2.7-py2.py3-none-any.whl"),
