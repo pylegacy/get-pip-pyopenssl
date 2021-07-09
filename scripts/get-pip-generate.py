@@ -148,7 +148,7 @@ def main():
     elif version == "2.7":
         PACKAGES = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
-            Package("pip-9.0.3-py2.py3-none-any.whl"),
+            Package("pip-20.3.4-py2.py3-none-any.whl"),
             Package("argparse-1.4.0-py2.py3-none-any.whl"),
             Package("wheel-0.36.2-py2.py3-none-any.whl"),
             Package("setuptools-44.1.1-py2.py3-none-any.whl"),
