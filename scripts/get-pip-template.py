@@ -62,8 +62,16 @@ def pip_extract(pkgname, dest=None):
 
 def pip_install(pkgname, *args):
 
+    import sys
+    import subprocess
     import pip
-    rc = pip.main(["install"] + [pkgname] + list(args))
+
+    pip_main = lambda *a: pip.main(list(a))
+    if hasattr(pip, "_internal"):
+        pip_call = [sys.executable, "-m", "pip"]
+        pip_main = lambda *a: subprocess.call(pip_call + list(a))
+
+    rc = pip_main("install", pkgname, *args)
     if rc != 0:
         raise RuntimeError("pip failed with exit code {0}".format(rc))
 
