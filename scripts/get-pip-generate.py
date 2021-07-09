@@ -145,6 +145,28 @@ def main():
             Package("six-1.13.0-py2.py3-none-any.whl"),
             Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
         ]
+    elif version == "2.7":
+        PACKAGES = [
+            # Essential packages (`pip`, `wheel` and `setuptools`).
+            Package("pip-9.0.3-py2.py3-none-any.whl"),
+            Package("argparse-1.4.0-py2.py3-none-any.whl"),
+            Package("wheel-0.29.0-py2.py3-none-any.whl"),
+            Package("setuptools-36.8.0-py2.py3-none-any.whl"),
+            # `cffi` and dependencies (for `cryptography`).
+            Package("pycparser-2.18.tar.gz"),
+            Package("cffi-1.11.2-cp27-cp27mu-manylinux1_x86_64.whl"),
+            # `enum34` and dependencies (for `cryptography`).
+            Package("ordereddict-1.1.tar.gz"),
+            Package("enum34-1.1.10.tar.gz"),
+            # `cryptography` and its remaining dependencies.
+            Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
+            Package("idna-2.7-py2.py3-none-any.whl"),
+            Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
+            Package("cryptography-2.1.1-cp27-cp27mu-manylinux1_x86_64.whl"),
+            # `pyOpenSSL` and its remaining dependencies.
+            Package("six-1.13.0-py2.py3-none-any.whl"),
+            Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
+        ]
     else:
         msg = "unsupported Python version '{0}'".format(version)
         raise ValueError(msg)
