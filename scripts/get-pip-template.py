@@ -4,20 +4,17 @@
 # Copyright (c) 2021 Víctor Molina García
 # MIT License
 #
-# Script to install a functional `pip` under Python 2.6 by forcing to
-# use `pyOpenSSL`.
+# Script to install a functional `pip` under Python versions without
+# Server Name Identification (SNI) support by using `pyOpenSSL`.
 #
 # Because it is not possible to install packages until having a `pip`
 # that actually works, all the required dependencies are appended to
 # the end of the file, as the usual `get-pip.py` does with `pip`.
 #
-# This script solves PyPI issues #974 and #978 that left Python 2.6
-# unsupported due to the SNI requirement that the Python 2.6 `ssl`
-# module cannot provide:
+# This script solves PyPI issues #974 and #978 that left `pip` unusable
+# for the Python versions without SNI support:
 #     https://github.com/pypa/pypi-support/issues/974
 #     https://github.com/pypa/pypi-support/issues/978
-#
-# The script currently supports `cp26mu` under `manylinux1_x86_64`.
 #
 from __future__ import print_function
 
