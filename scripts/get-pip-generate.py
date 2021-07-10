@@ -1,4 +1,22 @@
 #! /usr/bin/env python
+# -*- coding: utf8 -*-
+#
+# Copyright (c) 2021 Víctor Molina García
+# MIT License
+#
+# Generator to create working `get-pip.py` scripts for Python versions
+# without Server Name Identification (SNI) support by forcing the use
+# of `pyOpenSSL` inside `pip`.
+#
+# Because it is not possible to install packages until having a `pip`
+# that actually works, all the required dependencies are appended to
+# the end of the script, as the usual `get-pip.py` does with `pip`.
+#
+# The resulting `get-pip.py` script solves PyPI issues #974 and #978
+# that left `pip` unusable for the Python versions without SNI support:
+#     https://github.com/pypa/pypi-support/issues/974
+#     https://github.com/pypa/pypi-support/issues/978
+#
 
 
 class Package(object):

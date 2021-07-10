@@ -4,8 +4,9 @@
 # Copyright (c) 2021 Víctor Molina García
 # MIT License
 #
-# Script to install a functional `pip` under Python versions without
-# Server Name Identification (SNI) support by using `pyOpenSSL`.
+# Script to install a functional `pip` package under Python versions
+# without Server Name Identification (SNI) support by forcing the use
+# of `pyOpenSSL` inside `pip`.
 #
 # Because it is not possible to install packages until having a `pip`
 # that actually works, all the required dependencies are appended to
