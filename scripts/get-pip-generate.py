@@ -50,7 +50,7 @@ class Package(object):
 
         nsuffixes = 1 + int(self.filename.endswith(".tar.gz"))
         base = self.filename.rsplit(".", nsuffixes)[0]
-        return self.filename.split("-")[0]
+        return base.split("-")[0]
 
     @property
     def version(self):
