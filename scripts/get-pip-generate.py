@@ -69,7 +69,7 @@ class Package(object):
         self.filename = filename
         self.data = None
 
-    @property
+    @cachedproperty
     def name(self):
         """Python package name."""
 
@@ -77,7 +77,7 @@ class Package(object):
         base = self.filename.rsplit(".", nsuffixes)[0]
         return base.split("-")[0]
 
-    @property
+    @cachedproperty
     def version(self):
         """Python package version in string format."""
 
@@ -85,7 +85,7 @@ class Package(object):
         base = self.filename.rsplit(".", nsuffixes)[0]
         return base.split("-")[1]
 
-    @property
+    @cachedproperty
     def url(self):
         """Python package remote url from the PyPI repository."""
 
