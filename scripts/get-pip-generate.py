@@ -35,6 +35,31 @@ that left `pip` unusable for the Python versions without SNI support:
 """
 
 
+class cachedproperty(property):
+    """Property that caches its value after first calculation."""
+
+    def __init__(self, fget=None, fset=None, fdel=None, doc=None):
+        """Initialise property and save also the cached property name."""
+
+        super(cachedproperty, self).__init__(fget, fset, fdel, doc)
+        self.name = fget.__name__
+
+    def __get__(self, obj, objtype=None):
+        """Property getter that handles value caching."""
+
+        if obj is None:
+            return self
+        if self.fget is None:
+            raise AttributeError("unreadable attribute")
+
+        cache = obj.__dict__
+        try:
+            return cache[self.name]
+        except KeyError:
+            cache[self.name] = self.fget(obj)
+            return cache[self.name]
+
+
 class Package(object):
     """Wrapper class for Python packages coming from PyPI."""
 
