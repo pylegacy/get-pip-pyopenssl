@@ -86,28 +86,32 @@ class Package(object):
         return base.split("-")[1]
 
     @cachedproperty
-    def url(self):
-        """Python package remote url from the PyPI repository."""
+    def pypi_html(self):
+        """PyPI project HTML in string format (file download view)."""
 
-        import re
         try:
             from urllib.request import urlopen
         except ImportError:
             from urllib2 import urlopen
 
-        # Define some patterns.
         urlpattern = "https://pypi.org/project/{0}/{1}/#files"
+        conn = urlopen(urlpattern.format(self.name, self.version))
+        try:
+            html = conn.read().decode("utf-8")
+        finally:
+            conn.close()
+        return html
+
+    @property
+    def url(self):
+        """Python package remote url from the PyPI repository."""
+
+        import re
+
         rowpattern = ".*<a href=\"(.*{0}.*)\">".format(
             self.filename.replace(".", "\\."))
 
-        # Parse the download page from PyPI to get the package url.
-        conn = urlopen(urlpattern.format(self.name, self.version))
-        try:
-            htmlpage = conn.read().decode("utf-8").splitlines()
-        finally:
-            conn.close()
-
-        for htmlrow in htmlpage:
+        for htmlrow in self.pypi_html.splitlines():
             match = re.match(rowpattern, htmlrow)
             if match:
                 return match.group(1)
