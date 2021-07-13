@@ -109,6 +109,39 @@ class Package(object):
         return html
 
     @property
+    def pypi_package_author(self):
+        """Package author as shown in PyPI."""
+
+        import re
+
+        pattern = ".*<p><strong>Author:</strong> <a href=\".*\">(.*)</a></p>"
+        for htmlrow in self.pypi_project_html.splitlines():
+            match = re.match(pattern, htmlrow)
+            if match:
+                return match.group(1)
+        msg = "no author found for package {0}".format(self.filename)
+        raise ValueError(msg)
+
+    @property
+    def pypi_package_license(self):
+        """Package license as shown in PyPI."""
+
+        import re
+
+        pattern = ".*<p><strong>License:</strong> (.*)</p>"
+        for htmlrow in self.pypi_project_html.splitlines():
+            match = re.match(pattern, htmlrow)
+            if match:
+                license = match.group(1)
+                if re.match("MIT( License( \(UNKNOWN|MIT.*\)?))?", license):
+                    license = "MIT License (MIT)"
+                elif re.match("BSD( License( \(UNKNOWN|BSD.*\)?))?", license):
+                    license = "BSD License (BSD)"
+                return license
+        msg = "no author found for package {0}".format(self.filename)
+        raise ValueError(msg)
+
+    @property
     def pypi_package_url(self):
         """Python package remote url from the PyPI repository."""
 
