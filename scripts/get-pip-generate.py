@@ -179,6 +179,10 @@ class Package(object):
 
         return "\n".join([
             "\"{name}\": {{",
+            "    \"author\":",
+            "        \"{author}\",",
+            "    \"license\":",
+            "        \"{license}\",",
             "    \"filename\":",
             "        \"{filename}\",",
             "    \"filedata\": \"\"\"",
@@ -186,6 +190,8 @@ class Package(object):
             "    \"\"\",",
             "}},"
         ]).format(name=self.name,
+                  author=self.pypi_package_author,
+                  license=self.pypi_package_license,
                   filename=self.filename,
                   filedata=self.pkgencode(self.data))
 
