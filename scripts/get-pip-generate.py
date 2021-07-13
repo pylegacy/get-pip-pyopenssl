@@ -86,6 +86,39 @@ class Package(object):
         return base.split("-")[1]
 
     @property
+    def author(self):
+        """Package author as shown in PyPI."""
+
+        import re
+
+        pattern = ".*<p><strong>Author:</strong> <a href=\".*\">(.*)</a></p>"
+        for htmlrow in self.pypi_project_html.splitlines():
+            match = re.match(pattern, htmlrow)
+            if match:
+                return match.group(1)
+        msg = "no author found for package {0}".format(self.filename)
+        raise ValueError(msg)
+
+    @property
+    def license(self):
+        """Package license as shown in PyPI."""
+
+        import re
+
+        pattern = ".*<p><strong>License:</strong> (.*)</p>"
+        for htmlrow in self.pypi_project_html.splitlines():
+            match = re.match(pattern, htmlrow)
+            if match:
+                license = match.group(1)
+                if re.match("MIT( License( \(UNKNOWN|MIT.*\)?))?", license):
+                    license = "MIT License (MIT)"
+                elif re.match("BSD( License( \(UNKNOWN|BSD.*\)?))?", license):
+                    license = "BSD License (BSD)"
+                return license
+        msg = "no license found for package {0}".format(self.filename)
+        raise ValueError(msg)
+
+    @property
     def pypi_project_url(self):
         """PyPI project url in string format (file download view)."""
 
@@ -107,39 +140,6 @@ class Package(object):
         finally:
             conn.close()
         return html
-
-    @property
-    def pypi_package_author(self):
-        """Package author as shown in PyPI."""
-
-        import re
-
-        pattern = ".*<p><strong>Author:</strong> <a href=\".*\">(.*)</a></p>"
-        for htmlrow in self.pypi_project_html.splitlines():
-            match = re.match(pattern, htmlrow)
-            if match:
-                return match.group(1)
-        msg = "no author found for package {0}".format(self.filename)
-        raise ValueError(msg)
-
-    @property
-    def pypi_package_license(self):
-        """Package license as shown in PyPI."""
-
-        import re
-
-        pattern = ".*<p><strong>License:</strong> (.*)</p>"
-        for htmlrow in self.pypi_project_html.splitlines():
-            match = re.match(pattern, htmlrow)
-            if match:
-                license = match.group(1)
-                if re.match("MIT( License( \(UNKNOWN|MIT.*\)?))?", license):
-                    license = "MIT License (MIT)"
-                elif re.match("BSD( License( \(UNKNOWN|BSD.*\)?))?", license):
-                    license = "BSD License (BSD)"
-                return license
-        msg = "no license found for package {0}".format(self.filename)
-        raise ValueError(msg)
 
     @property
     def pypi_package_url(self):
@@ -190,8 +190,8 @@ class Package(object):
             "    \"\"\",",
             "}},"
         ]).format(name=self.name,
-                  author=self.pypi_package_author,
-                  license=self.pypi_package_license,
+                  author=self.author,
+                  license=self.license,
                   filename=self.filename,
                   filedata=self.pkgencode(self.data))
 
