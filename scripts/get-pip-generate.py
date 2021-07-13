@@ -69,7 +69,7 @@ class Package(object):
         self.filename = filename
         self.data = None
 
-    @cachedproperty
+    @property
     def name(self):
         """Python package name."""
 
@@ -77,7 +77,7 @@ class Package(object):
         base = self.filename.rsplit(".", nsuffixes)[0]
         return base.split("-")[0]
 
-    @cachedproperty
+    @property
     def version(self):
         """Python package version in string format."""
 
