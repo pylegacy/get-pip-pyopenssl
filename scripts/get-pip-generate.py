@@ -147,11 +147,11 @@ class Package(object):
 
         import re
 
-        rowpattern = ".*<a href=\"(.*{0}.*)\">".format(
-            self.filename.replace(".", "\\."))
+        filename_regex = self.filename.replace(".", "\\.")
+        pattern = ".*<a href=\"(.*{0}.*)\">".format(filename_regex)
 
         for htmlrow in self.pypi_project_html.splitlines():
-            match = re.match(rowpattern, htmlrow)
+            match = re.match(pattern, htmlrow)
             if match:
                 return match.group(1)
         msg = "no url found for package {0}".format(self.filename)
