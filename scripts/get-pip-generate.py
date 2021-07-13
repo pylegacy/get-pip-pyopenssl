@@ -138,7 +138,7 @@ class Package(object):
                 elif re.match("BSD( License( \(UNKNOWN|BSD.*\)?))?", license):
                     license = "BSD License (BSD)"
                 return license
-        msg = "no author found for package {0}".format(self.filename)
+        msg = "no license found for package {0}".format(self.filename)
         raise ValueError(msg)
 
     @property
