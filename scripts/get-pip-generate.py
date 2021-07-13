@@ -85,8 +85,15 @@ class Package(object):
         base = self.filename.rsplit(".", nsuffixes)[0]
         return base.split("-")[1]
 
+    @property
+    def pypi_project_url(self):
+        """PyPI project url in string format (file download view)."""
+
+        urlpattern = "https://pypi.org/project/{0}/{1}/#files"
+        return urlpattern.format(self.name, self.version)
+
     @cachedproperty
-    def pypi_html(self):
+    def pypi_project_html(self):
         """PyPI project HTML in string format (file download view)."""
 
         try:
@@ -94,8 +101,7 @@ class Package(object):
         except ImportError:
             from urllib2 import urlopen
 
-        urlpattern = "https://pypi.org/project/{0}/{1}/#files"
-        conn = urlopen(urlpattern.format(self.name, self.version))
+        conn = urlopen(self.pypi_project_url)
         try:
             html = conn.read().decode("utf-8")
         finally:
@@ -103,7 +109,7 @@ class Package(object):
         return html
 
     @property
-    def url(self):
+    def pypi_package_url(self):
         """Python package remote url from the PyPI repository."""
 
         import re
@@ -111,7 +117,7 @@ class Package(object):
         rowpattern = ".*<a href=\"(.*{0}.*)\">".format(
             self.filename.replace(".", "\\."))
 
-        for htmlrow in self.pypi_html.splitlines():
+        for htmlrow in self.pypi_project_html.splitlines():
             match = re.match(rowpattern, htmlrow)
             if match:
                 return match.group(1)
@@ -126,7 +132,7 @@ class Package(object):
         except ImportError:
             from urllib2 import urlopen
 
-        conn = urlopen(self.url)
+        conn = urlopen(self.pypi_package_url)
         try:
             self.data = conn.read()
         finally:
