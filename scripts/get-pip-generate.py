@@ -249,23 +249,23 @@ def main():
         type=str, help="Architecture", required=True,
         choices=["32bit", "64bit"])
     parser.add_argument(
-        "--version",
-        type=str, help="Python implementation", required=True,
+        "--abi",
+        type=str, help="Python ABI implementation", required=True,
         choices=["cp26m", "cp26mu", "cp27m", "cp27mu"])
 
     # Parse arguments.
     args = parser.parse_args()
-    version_short = re.match("(cp\d+)m?u?", args.version).groups(1)[0]
-    semver = ".".join(re.match("cp(\d)(\d+)", version_short).groups())
-    label = "-".join([version_short, args.version,
+    version = re.match("(cp\d+)m?u?", args.abi).groups(1)[0]
+    semver = ".".join(re.match("cp(\d)(\d+)", version).groups())
+    label = "-".join([version, args.abi,
                       VALID_TARGETS[(args.target, args.arch)]])
 
     # Do not allow 'mu' implementations for Windows.
-    if args.target == "Windows" and args.version.endswith("mu"):
-        msg = "unsupported Python version '{0}' under {1} {2}"
-        raise ValueError(msg.format(args.version, args.target, args.arch))
+    if args.target == "Windows" and args.abi.endswith("mu"):
+        msg = "unsupported Python ABI version '{0}' under {1} {2}"
+        raise ValueError(msg.format(args.abi, args.target, args.arch))
 
-    if version_short == "cp26":
+    if semver == "2.6":
         PACKAGES = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
             Package("pip-9.0.3-py2.py3-none-any.whl"),
@@ -287,7 +287,7 @@ def main():
             Package("six-1.13.0-py2.py3-none-any.whl"),
             Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
         ]
-    elif version_short == "cp27":
+    elif semver == "2.7":
         PACKAGES = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
             Package("pip-20.3.4-py2.py3-none-any.whl"),
@@ -309,8 +309,8 @@ def main():
             Package("pyOpenSSL-18.0.0-py2.py3-none-any.whl"),
         ]
     else:
-        msg = "unsupported Python version '{0}' under {1} {2}"
-        raise ValueError(msg.format(args.version, args.target, args.arch))
+        msg = "unsupported Python ABI version '{0}' under {1} {2}"
+        raise ValueError(msg.format(args.abi, args.target, args.arch))
 
     pkgtext = []
     for pkg in PACKAGES:
