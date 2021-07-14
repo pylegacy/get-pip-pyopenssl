@@ -279,12 +279,12 @@ def main():
             Package("ordereddict-1.1.tar.gz"),
             Package("enum34-1.1.10-py2-none-any.whl"),
             # `cryptography` and its remaining dependencies.
+            Package("six-1.13.0-py2.py3-none-any.whl"),
             Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
             Package("idna-2.7-py2.py3-none-any.whl"),
             Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
             Package("cryptography-2.1.1-{0}.whl".format(label)),
             # `pyOpenSSL` and its remaining dependencies.
-            Package("six-1.13.0-py2.py3-none-any.whl"),
             Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
         ]
     elif semver == "2.7":
@@ -300,12 +300,12 @@ def main():
             # `enum34` and dependencies (for `cryptography`).
             Package("enum34-1.1.10-py2-none-any.whl"),
             # `cryptography` and its remaining dependencies.
+            Package("six-1.16.0-py2.py3-none-any.whl"),
             Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
             Package("idna-2.10-py2.py3-none-any.whl"),
             Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
             Package("cryptography-2.2.2-{0}.whl".format(label)),
             # `pyOpenSSL` and its remaining dependencies.
-            Package("six-1.16.0-py2.py3-none-any.whl"),
             Package("pyOpenSSL-18.0.0-py2.py3-none-any.whl"),
         ]
     else:
