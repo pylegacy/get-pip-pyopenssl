@@ -2,21 +2,37 @@
 # -*- coding: utf8 -*-
 #
 # Copyright (c) 2021 Víctor Molina García
-# MIT License
 #
-# Script to install a functional `pip` package under Python versions
-# without Server Name Identification (SNI) support by forcing the use
-# of `pyOpenSSL` inside `pip`.
+# This file is part of get-pip-pyopenssl.
 #
-# Because it is not possible to install packages until having a `pip`
-# that actually works, all the required dependencies are appended to
-# the end of the file, as the usual `get-pip.py` does with `pip`.
+# get-pip-pyopenssl is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# This script solves PyPI issues #974 and #978 that left `pip` unusable
-# for the Python versions without SNI support:
-#     https://github.com/pypa/pypi-support/issues/974
-#     https://github.com/pypa/pypi-support/issues/978
+# get-pip-pyopenssl is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
 #
+# You should have received a copy of the GNU General Public License
+# along with get-pip-pyopenssl. If not, see <https://www.gnu.org/licenses/>.
+#
+"""Script to install a functional `pip` package that uses `pyOpenSSL`.
+
+This script installs a functional `pip` package for Python versions
+without Server Name Identification (SNI) support by forcing the use
+of `pyOpenSSL` inside `pip`.
+
+Because it is not possible to install packages until having a `pip`
+that actually works, all the required dependencies are appended to
+the end of the script, as the usual `get-pip.py` does with `pip`.
+
+The resulting `get-pip.py` script solves PyPI issues #974 and #978
+that left `pip` unusable for the Python versions without SNI support:
+    https://github.com/pypa/pypi-support/issues/974
+    https://github.com/pypa/pypi-support/issues/978
+"""
 from __future__ import print_function
 
 
