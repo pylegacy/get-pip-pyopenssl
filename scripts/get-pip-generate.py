@@ -52,7 +52,11 @@ class cachedproperty(property):
         if self.fget is None:
             raise AttributeError("unreadable attribute")
 
-        cache = obj.__dict__
+        try:
+            cache = obj.__cache__
+        except AttributeError:
+            obj.__cache__ = dict()
+            cache = obj.__cache__
         try:
             return cache[self.name]
         except KeyError:
