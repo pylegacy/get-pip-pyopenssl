@@ -223,19 +223,49 @@ class Package(object):
 def main():
     """Main script function."""
 
+    import re
     import os.path
     import argparse
+
+    VALID_TARGETS = {
+        ("Windows", "32bit"):
+            "win32",
+        ("Windows", "64bit"):
+            "win_amd64",
+        ("Linux", "32bit"):
+            "manylinux1_i686",
+        ("Linux", "64bit"):
+            "manylinux1_x86_64",
+    }
 
     # Define arguments.
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--version", type=str, help="Python version", required=True)
+        "--target",
+        type=str, help="Target operating system", required=True,
+        choices=["Linux", "Windows"],)
+    parser.add_argument(
+        "--arch",
+        type=str, help="Architecture", required=True,
+        choices=["32bit", "64bit"])
+    parser.add_argument(
+        "--version",
+        type=str, help="Python implementation", required=True,
+        choices=["cp26m", "cp26mu", "cp27m", "cp27mu"])
 
     # Parse arguments.
     args = parser.parse_args()
-    version = args.version
+    version_short = re.match("(cp\d+)m?u?", args.version).groups(1)[0]
+    semver = ".".join(re.match("cp(\d)(\d+)", version_short).groups())
+    label = "-".join([version_short, args.version,
+                      VALID_TARGETS[(args.target, args.arch)]])
 
-    if version == "2.6":
+    # Do not allow 'mu' implementations for Windows.
+    if args.target == "Windows" and args.version.endswith("mu"):
+        msg = "unsupported Python version '{0}' under {1} {2}"
+        raise ValueError(msg.format(args.version, args.target, args.arch))
+
+    if version_short == "cp26":
         PACKAGES = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
             Package("pip-9.0.3-py2.py3-none-any.whl"),
@@ -244,7 +274,7 @@ def main():
             Package("setuptools-36.8.0-py2.py3-none-any.whl"),
             # `cffi` and dependencies (for `cryptography`).
             Package("pycparser-2.18.tar.gz"),
-            Package("cffi-1.11.2-cp26-cp26mu-manylinux1_x86_64.whl"),
+            Package("cffi-1.11.2-{0}.whl".format(label)),
             # `enum34` and dependencies (for `cryptography`).
             Package("ordereddict-1.1.tar.gz"),
             Package("enum34-1.1.10-py2-none-any.whl"),
@@ -252,12 +282,12 @@ def main():
             Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
             Package("idna-2.7-py2.py3-none-any.whl"),
             Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
-            Package("cryptography-2.1.1-cp26-cp26mu-manylinux1_x86_64.whl"),
+            Package("cryptography-2.1.1-{0}.whl".format(label)),
             # `pyOpenSSL` and its remaining dependencies.
             Package("six-1.13.0-py2.py3-none-any.whl"),
             Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
         ]
-    elif version == "2.7":
+    elif version_short == "cp27":
         PACKAGES = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
             Package("pip-20.3.4-py2.py3-none-any.whl"),
@@ -266,21 +296,21 @@ def main():
             Package("setuptools-44.1.1-py2.py3-none-any.whl"),
             # `cffi` and dependencies (for `cryptography`).
             Package("pycparser-2.20-py2.py3-none-any.whl"),
-            Package("cffi-1.14.6-cp27-cp27mu-manylinux1_x86_64.whl"),
+            Package("cffi-1.14.6-{0}.whl".format(label)),
             # `enum34` and dependencies (for `cryptography`).
             Package("enum34-1.1.10-py2-none-any.whl"),
             # `cryptography` and its remaining dependencies.
             Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
             Package("idna-2.10-py2.py3-none-any.whl"),
             Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
-            Package("cryptography-2.2.2-cp27-cp27mu-manylinux1_x86_64.whl"),
+            Package("cryptography-2.2.2-{0}.whl".format(label)),
             # `pyOpenSSL` and its remaining dependencies.
             Package("six-1.16.0-py2.py3-none-any.whl"),
             Package("pyOpenSSL-18.0.0-py2.py3-none-any.whl"),
         ]
     else:
-        msg = "unsupported Python version '{0}'".format(version)
-        raise ValueError(msg)
+        msg = "unsupported Python version '{0}' under {1} {2}"
+        raise ValueError(msg.format(args.version, args.target, args.arch))
 
     pkgtext = []
     for pkg in PACKAGES:
@@ -289,11 +319,11 @@ def main():
 
     scripts_dir = os.path.dirname(__file__)
     template_file = os.path.join(scripts_dir, "get-pip-template.py")
-    with open("get-pip-py{0}.py".format(version), "w") as fd1:
+    with open("get-pip-{0}.py".format(label), "w") as fd1:
         with open(template_file, "r") as fd2:
             for line2 in fd2:
                 if line2 == "#! /usr/bin/env python\n":
-                    fd1.write("#! /usr/bin/env python{0}\n".format(version))
+                    fd1.write("#! /usr/bin/env python{0}\n".format(semver))
                 elif line2 == "PACKAGES = {}\n":
                     fd1.write("PACKAGES = {{\n\n{0}\n\n}}\n".format(injection))
                 else:
