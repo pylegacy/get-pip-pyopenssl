@@ -266,6 +266,8 @@ def main():
         raise ValueError(msg.format(args.abi, args.target, args.arch))
 
     if semver == "2.6":
+        cffi_version = "1.10.0" if args.target == "Windows" else "1.11.2"
+        crypto_version = "2.0.3" if args.target == "Windows" else "2.1.1"
         PACKAGES = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
             Package("pip-9.0.3-py2.py3-none-any.whl"),
@@ -274,7 +276,7 @@ def main():
             Package("setuptools-36.8.0-py2.py3-none-any.whl"),
             # `cffi` and dependencies (for `cryptography`).
             Package("pycparser-2.18.tar.gz"),
-            Package("cffi-1.11.2-{0}.whl".format(label)),
+            Package("cffi-{0}-{1}.whl".format(cffi_version, label)),
             # `enum34` and dependencies (for `cryptography`).
             Package("ordereddict-1.1.tar.gz"),
             Package("enum34-1.1.10-py2-none-any.whl"),
@@ -283,7 +285,7 @@ def main():
             Package("asn1crypto-1.4.0-py2.py3-none-any.whl"),
             Package("idna-2.7-py2.py3-none-any.whl"),
             Package("ipaddress-1.0.23-py2.py3-none-any.whl"),
-            Package("cryptography-2.1.1-{0}.whl".format(label)),
+            Package("cryptography-{0}-{1}.whl".format(crypto_version, label)),
             # `pyOpenSSL` and its remaining dependencies.
             Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
         ]
