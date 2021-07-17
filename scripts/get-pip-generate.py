@@ -35,6 +35,27 @@ that left `pip` unusable for the Python versions without SNI support:
 """
 
 
+def makedirs(name, mode=511, exist_ok=False):
+    """Create a leaf directory and all intermediate ones.
+
+    It works like `mkdir`, except that any intermediate path segment (not
+    just the rightmost) will be created if it does not exist. If the
+    target directory already exists, raise an ``OSError`` if ``exist_ok``
+    is False. Otherwise no exception is raised. This is recursive.
+    """
+
+    import os
+    import errno
+
+    exist_ok = bool(exist_ok)
+    try:
+        os.makedirs(name, mode)
+    except OSError as err:
+        if err.errno == errno.EEXIST and exist_ok and os.path.isdir(name):
+            return
+        raise
+
+
 class cachedproperty(property):
     """Property that caches its value after first calculation."""
 
@@ -252,6 +273,10 @@ def main():
         "--abi",
         type=str, help="Python ABI implementation", required=True,
         choices=["cp26m", "cp26mu", "cp27m", "cp27mu"])
+    parser.add_argument(
+        "--dest",
+        type=str, help="Destination folder", required=False,
+        default="./")
 
     # Parse arguments.
     args = parser.parse_args()
@@ -321,7 +346,9 @@ def main():
 
     scripts_dir = os.path.dirname(__file__)
     template_file = os.path.join(scripts_dir, "get-pip-template.py")
-    with open("get-pip-{0}.py".format(label), "w") as fd1:
+    target_file = os.path.join(args.dest, "get-pip-{0}.py".format(label))
+    makedirs(args.dest, exist_ok=True)
+    with open(target_file, "w") as fd1:
         with open(template_file, "r") as fd2:
             for line2 in fd2:
                 if line2 == "#! /usr/bin/env python\n":
