@@ -1,34 +1,42 @@
 # get-pip-pyopenssl
 
-This script generates working `get-pip.py` scripts for Python versions
-without Server Name Identification (SNI) support by forcing the use
-of `pyOpenSSL` inside `pip`.
+This tool generates working `get-pip` scripts that force the use of
+`pyOpenSSL` inside `pip`. Because it is not possible to install packages
+until having a `pip` that actually works, all the required dependencies
+are appended to the end of the scripts, as the usual `get-pip` does with
+`pip`.
 
-Because it is not possible to install packages until having a `pip`
-that actually works, all the required dependencies are appended to
-the end of the script, as the usual `get-pip.py` does with `pip`.
-
-The resulting `get-pip.py` script solves PyPI issues
+The resulting `get-pip` scripts solve PyPI issues
 [#974](https://github.com/pypa/pypi-support/issues/974) and
 [#978](https://github.com/pypa/pypi-support/issues/978) that left `pip`
-unusable for the Python versions without SNI support:
+unusable for the Python versions without SNI support.
+
+The project is currently in active development. At the moment, the tool
+provides support for Python 2.6 and Python 2.7 under GNU/Linux and
+Windows. Future releases will try to add support for more Python
+versions.
 
 ## Usage
 
-At the moment, there is one specific `get-pip.py` script for every
-platform, architecture and Python ABI, because the bundled dependencies
-`cffi` and `cryptography` are pre-compiled binaries.
+There is one specific script for every platform, architecture and Python
+ABI, because the bundled dependencies `cffi` and `cryptography` are
+pre-compiled binaries.
 
-For example, to use this script under GNU/Linux 64-bit with Python 2.6
-(ABI `cp26mu`), download the appropriate file from the
-[Releases](../../releases) section and simply run it as:
-```
-python get-pip-cp26-cp26mu-manylinux1_x86_64.py
+The helper script `get-pip-pyopenssl.py` takes care of downloading the
+appropriate script under the hood and it the recommended way of using
+the tool.
+
+* For GNU/Linux systems, run:
+```sh
+wget http://molinav.net/hub/python/get-pip-pyopenssl.py
+python get-pip-pyopenssl.py
 ```
 
-The project is currently in active development and future releases will
-try to reduce the number of `get-pip.py` scripts to just have one per
-Python version (major plus minor).
+* For Windows, run (in PowerShell):
+```sh
+Invoke-WebRequest http://molinav.net/hub/python/get-pip-pyopenssl.py -OutFile get-pip-pyopenssl.py
+python get-pip-pyopenssl.py
+```
 
 ## License
 
