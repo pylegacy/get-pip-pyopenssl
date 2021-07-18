@@ -344,11 +344,11 @@ def main():
         pkgtext.append(pkg.textify())
     injection = "\n".join(pkgtext)
 
-    scripts_dir = os.path.dirname(__file__)
-    template_file = os.path.join(scripts_dir, "get-pip-template.py")
-    target_file = os.path.join(args.dest, "get-pip-{0}.py".format(label))
+    here = os.path.dirname(__file__)
+    template_file = os.path.join(here, "template.py")
+    target_name = "get-pip-pyopenssl-{0}.py".format(label)
     makedirs(args.dest, exist_ok=True)
-    with open(target_file, "w") as fd1:
+    with open(os.path.join(args.dest, target_name), "w") as fd1:
         with open(template_file, "r") as fd2:
             for line2 in fd2:
                 if line2 == "#! /usr/bin/env python\n":

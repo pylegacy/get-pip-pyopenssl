@@ -48,7 +48,7 @@ if __name__ == "__main__":
         print("- Building {0} for {1} {2}...".format(abi, target, arch))
         subprocess.call([
             sys.executable, "-u",
-            os.path.join(here, "scripts", "get-pip-generate.py"),
+            os.path.join(here, "scripts", "generate.py"),
             "--target", target,
             "--arch", arch,
             "--abi", abi,
