@@ -51,15 +51,21 @@ def get_abi():
     """Return the ABI for the current Python installation."""
 
     import sys
+    import platform
     from distutils import sysconfig
 
     # Get ABI flags.
-    abid = ("d" if sysconfig.get_config_var("WITH_PYDEBUG") or
-            hasattr(sys, "gettotalrefcount") else "")
-    abim = ("m" if sysconfig.get_config_var("WITH_PYMALLOC") and
-            sys.version_info < (3, 8) else "")
-    abiu = ("u" if sysconfig.get_config_var("Py_UNICODE_SIZE") and
-            sys.version_info < (3, 3) else "")
+    abid = ("d" if sysconfig.get_config_var("WITH_PYDEBUG") == 1 or
+            hasattr(sys, "gettotalrefcount")
+            else "")
+    abim = ("m" if sys.version_info < (3, 8) and
+            sysconfig.get_config_var("WITH_PYMALLOC") == 1 or
+            platform.python_implementation() == "CPython"
+            else "")
+    abiu = ("u" if sys.version_info < (3, 3) and
+            sysconfig.get_config_var("Py_UNICODE_SIZE") == 4 or
+            sys.maxunicode == 0x10FFFF
+            else "")
 
     # Create ABI string.
     pyver = "cp{0}{1}".format(*sys.version_info[:2])
