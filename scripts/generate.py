@@ -345,7 +345,7 @@ def main():
     injection = "\n".join(pkgtext)
 
     here = os.path.dirname(__file__)
-    template_file = os.path.join(here, "template.py")
+    template_file = os.path.join(here, "template-script.py")
     target_name = "get-pip-pyopenssl-{0}.py".format(label)
     makedirs(args.dest, exist_ok=True)
     with open(os.path.join(args.dest, target_name), "w") as fd1:
