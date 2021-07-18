@@ -19,17 +19,31 @@
 # along with get-pip-pyopenssl. If not, see <https://www.gnu.org/licenses/>.
 #
 
-if __name__ == "__main__":
+
+def main():
 
     import os
     import re
     import sys
+    import argparse
     import itertools
     import subprocess
 
-    here = os.path.dirname(__file__)
-    dest = os.path.join("build")
+    # Define arguments.
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--dest",
+        type=str, help="Destination build folder", required=False,
+        default="build")
+    parser.add_argument(
+        "--remote",
+        type=str, help="Target operating system", required=False,
+        default=None)
 
+    # Parse arguments.
+    args = parser.parse_args()
+
+    here = os.path.dirname(__file__)
     targets = ("Linux", "Windows")
     archs = ("32bit", "64bit")
     abis = ("cp26m", "cp26mu", "cp27m", "cp27mu")
@@ -52,5 +66,20 @@ if __name__ == "__main__":
             "--target", target,
             "--arch", arch,
             "--abi", abi,
-            "--dest", os.path.join(dest, version),
+            "--dest", os.path.join(args.dest, version),
         ])
+
+    # Write out the helper script.
+    template = os.path.join(here, "scripts", "template-main.py")
+    outfile = os.path.join(args.dest, "get-pip-pyopenssl.py")
+    with open(outfile, "w") as fd1:
+        with open(template, "r") as fd2:
+            for line2 in fd2:
+                if line2.startswith("    scriptroot =") and args.remote:
+                    fd1.write("    scriptroot = \"{0}\"\n".format(args.remote))
+                else:
+                    fd1.write(line2)
+
+
+if __name__ == "__main__":
+    main()
