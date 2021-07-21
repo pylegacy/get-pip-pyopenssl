@@ -19,7 +19,7 @@
 # along with get-pip-pyopenssl. If not, see <https://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.1.0"
+__version__ = "0.1.0+dev"
 
 
 def main():
