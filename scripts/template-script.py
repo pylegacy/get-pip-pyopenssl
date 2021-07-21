@@ -147,7 +147,7 @@ def pip_autopatch():
                     "    del pyopenssl",
                 ]
                 lines.extend(["{0}{1}\n".format(indent, item)
-                               for item in injection])
+                              for item in injection])
                 found_try = False
             else:
                 found_try = False
