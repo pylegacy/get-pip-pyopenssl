@@ -82,13 +82,22 @@ def pip_extract(pkgname, dest=None):
 def pip_install(pkgname, *args):
 
     import sys
+    import warnings
     import subprocess
     import pip
+    from pip._vendor.urllib3.exceptions import SNIMissingWarning
+    from pip._vendor.urllib3.exceptions import InsecurePlatformWarning
 
-    pip_main = lambda *a: pip.main(list(a))
-    if hasattr(pip, "_internal"):
-        pip_call = [sys.executable, "-m", "pip"]
-        pip_main = lambda *a: subprocess.call(pip_call + list(a))
+    def pip_main(*args):
+        if hasattr(pip, "_internal"):
+            pip_call = [sys.executable, "-m", "pip"]
+            exitcode = subprocess.call(pip_call + list(args))
+        else:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", category=SNIMissingWarning)
+                warnings.simplefilter("ignore", category=InsecurePlatformWarning)
+                exitcode = pip.main(list(args))
+        return exitcode
 
     rc = pip_main("install", pkgname, *args)
     if rc != 0:
