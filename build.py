@@ -38,7 +38,7 @@ def main():
         default="build")
     parser.add_argument(
         "--remote",
-        type=str, help="Target operating system", required=False,
+        type=str, help="Expected remote root location", required=False,
         default=None)
 
     # Parse arguments.
