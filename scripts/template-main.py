@@ -32,7 +32,7 @@ SNI support:
     https://github.com/pypa/pypi-support/issues/978
 """
 
-__version__ = "0.1.0+dev"
+__version__ = None
 
 
 def get_arch():

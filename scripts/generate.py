@@ -355,6 +355,8 @@ def main():
             for line2 in fd2:
                 if line2 == "#! /usr/bin/env python\n":
                     fd1.write("#! /usr/bin/env python{0}\n".format(semver))
+                elif line2 == "__version__ = None\n":
+                    fd1.write("__version__ = \"{0}\"\n".format(__version__))
                 elif line2 == "PACKAGES = {}\n":
                     fd1.write("PACKAGES = {{\n\n{0}\n\n}}\n".format(injection))
                 else:

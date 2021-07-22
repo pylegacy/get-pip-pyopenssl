@@ -19,8 +19,6 @@
 # along with get-pip-pyopenssl. If not, see <https://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.1.0+dev"
-
 
 def main():
 
@@ -30,6 +28,7 @@ def main():
     import argparse
     import itertools
     import subprocess
+    from scripts.generate import __version__
 
     # Define arguments.
     parser = argparse.ArgumentParser()
@@ -77,7 +76,9 @@ def main():
     with open(outfile, "w") as fd1:
         with open(template, "r") as fd2:
             for line2 in fd2:
-                if line2.startswith("    scriptroot =") and args.remote:
+                if line2 == "__version__ = None\n":
+                    fd1.write("__version__ = \"{0}\"\n".format(__version__))
+                elif line2.startswith("    scriptroot =") and args.remote:
                     fd1.write("    scriptroot = \"{0}\"\n".format(args.remote))
                 else:
                     fd1.write(line2)

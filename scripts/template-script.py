@@ -35,7 +35,7 @@ that left `pip` unusable for the Python versions without SNI support:
 """
 from __future__ import print_function
 
-__version__ = "0.1.0+dev"
+__version__ = None
 
 
 def unpack(path, dest=None):
