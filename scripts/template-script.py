@@ -81,23 +81,32 @@ def pip_extract(pkgname, dest=None):
 
 def pip_install(pkgname, *args):
 
+    import os
     import sys
     import warnings
     import subprocess
     import pip
     from pip._vendor.urllib3.exceptions import SNIMissingWarning
     from pip._vendor.urllib3.exceptions import InsecurePlatformWarning
+    pip_parent_dir = os.path.dirname(os.path.dirname(pip.__file__))
 
     def pip_main(*args):
+        # pip main call for pip >= 10.
         if hasattr(pip, "_internal"):
-            pip_call = [sys.executable, "-m", "pip"]
-            exitcode = subprocess.call(pip_call + list(args))
-        else:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=SNIMissingWarning)
-                warnings.simplefilter("ignore", category=InsecurePlatformWarning)
-                exitcode = pip.main(list(args))
-        return exitcode
+            env = os.environ.copy()
+            env["PYTHONPATH"] = "{0}{1}{2}".format(
+                pip_parent_dir, ";" if os.name == "nt" else ":",
+                os.environ.get("PYTHONPATH", ""))
+            wflags = ["-W ignore::{0}.{1}".format(x.__module__, x.__name__)
+                      for x in [SNIMissingWarning, InsecurePlatformWarning]]
+            return subprocess.call(
+                [sys.executable] + wflags + ["-m", "pip"] + list(args),
+                env=env)
+        # pip main call for pip < 10.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=SNIMissingWarning)
+            warnings.simplefilter("ignore", category=InsecurePlatformWarning)
+            return pip.main(list(args))
 
     rc = pip_main("install", pkgname, *args)
     if rc != 0:
