@@ -67,7 +67,7 @@ def main():
             "--target", target,
             "--arch", arch,
             "--abi", abi,
-            "--dest", os.path.join(args.dest, version),
+            "--dest", os.path.join(args.dest, "pip", version),
         ])
 
     # Write out the helper script.

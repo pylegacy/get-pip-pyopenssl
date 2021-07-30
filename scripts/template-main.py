@@ -99,7 +99,8 @@ def main():
     scriptname = "get-pip-pyopenssl-{0}-{1}-{2}.py".format(pyver, pyabi, arch)
     if re.match("https?://.*", scriptroot):
         # Script root is an URL.
-        scriptpath = "/".join([scriptroot.strip("/"), version, scriptname])
+        scriptpath = "/".join([scriptroot.strip("/"), "pip", version,
+                               scriptname])
         try:
             tmpdir = tempfile.mkdtemp(prefix="tmp-get-pip-pyopenssl-")
             tmppath = os.path.join(tmpdir, scriptname)
@@ -115,7 +116,7 @@ def main():
                 shutil.rmtree(tmpdir, ignore_errors=True)
     else:
         # Script root is a folder.
-        scriptpath = os.path.join(scriptroot, version, scriptname)
+        scriptpath = os.path.join(scriptroot, "pip", version, scriptname)
         subprocess.call([sys.executable, "-u", scriptpath])
 
 
