@@ -137,9 +137,9 @@ class Package(object):
             match = re.match(pattern, htmlrow)
             if match:
                 license = match.group(1)
-                if re.match("MIT( License( \(UNKNOWN|MIT.*\)?))?", license):
+                if re.match(r"MIT( License( \(UNKNOWN|MIT.*\)?))?", license):
                     license = "MIT License (MIT)"
-                elif re.match("BSD( License( \(UNKNOWN|BSD.*\)?))?", license):
+                elif re.match(r"BSD( License( \(UNKNOWN|BSD.*\)?))?", license):
                     license = "BSD License (BSD)"
                 return license
         msg = "no license found for package {0}".format(self.filename)
@@ -282,8 +282,8 @@ def main():
 
     # Parse arguments.
     args = parser.parse_args()
-    version = re.match("(cp\d+)m?u?", args.abi).groups(1)[0]
-    semver = ".".join(re.match("cp(\d)(\d+)", version).groups())
+    version = re.match(r"(cp\d+)m?u?", args.abi).groups(1)[0]
+    semver = ".".join(re.match(r"cp(\d)(\d+)", version).groups())
     label = "-".join([version, args.abi,
                       VALID_TARGETS[(args.target, args.arch)]])
 

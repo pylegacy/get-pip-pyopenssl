@@ -92,7 +92,7 @@ def main():
 
     arch = get_arch()
     pyabi = get_abi()
-    pyver = re.match("(cp\d+)m?u?", pyabi).groups(1)[0]
+    pyver = re.match(r"(cp\d+)m?u?", pyabi).groups(1)[0]
     version = "{0}.{1}".format(*sys.version_info[:2])
 
     scriptroot = os.path.dirname(os.path.abspath(__file__))

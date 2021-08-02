@@ -56,7 +56,7 @@ def main():
             continue
 
         # Get Python version from ABI.
-        version = re.match("cp(\d+)m?u?", abi).groups(1)[0]
+        version = re.match(r"cp(\d+)m?u?", abi).groups(1)[0]
         version = ".".join([version[0], version[1:]])
 
         # Call the generate script.
