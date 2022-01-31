@@ -23,7 +23,7 @@ ABI, because the bundled dependencies `cffi` and `cryptography` are
 pre-compiled binaries.
 
 The helper script `get-pip-pyopenssl.py` takes care of downloading the
-appropriate script under the hood and it the recommended way of using
+appropriate script under the hood and it is the recommended way of using
 the tool.
 
 * For GNU/Linux systems, run:
