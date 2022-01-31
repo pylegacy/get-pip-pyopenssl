@@ -28,13 +28,13 @@ the tool.
 
 * For GNU/Linux systems, run:
 ```sh
-wget http://molinav.net/hub/python/get-pip-pyopenssl.py
+wget http://pylegacy.org/hub/get-pip-pyopenssl.py
 python get-pip-pyopenssl.py
 ```
 
 * For Windows, run (in PowerShell):
 ```sh
-Invoke-WebRequest http://molinav.net/hub/python/get-pip-pyopenssl.py -OutFile get-pip-pyopenssl.py
+Invoke-WebRequest http://pylegacy.org/hub/get-pip-pyopenssl.py -OutFile get-pip-pyopenssl.py
 python get-pip-pyopenssl.py
 ```
 
