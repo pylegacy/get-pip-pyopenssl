@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf8 -*-
 #
-# Copyright (c) 2021 Víctor Molina García
+# Copyright (c) 2021-2022 Víctor Molina García
 #
 # This file is part of get-pip-pyopenssl.
 #
