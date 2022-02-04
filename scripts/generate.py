@@ -366,7 +366,7 @@ def main():
                     line2 = "__version__ = \"{0}\"\n".format(__version__)
                 if line2 == "PACKAGES = {}\n":
                     line2 = "PACKAGES = {{\n\n{0}\n\n}}\n".format(injection)
-                fd1.write(line2.encode())
+                fd1.write(line2.encode("utf-8"))
 
 
 if __name__ == "__main__":

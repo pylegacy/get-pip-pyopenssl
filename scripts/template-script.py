@@ -184,7 +184,7 @@ def pip_autopatch():
                 found_try = False
             lines.append(line)
     with io.open(sslimport_file, "wb") as fd:
-        fd.writelines([line.encode() for line in lines])
+        fd.writelines([line.encode("utf-8") for line in lines])
 
     # Patch issue with unicode/bytes mix in `pyopenssl`.
     lines = []
@@ -194,7 +194,7 @@ def pip_autopatch():
             lines.append(line.replace("data", "data.encode()")
                          if text in line else line)
     with io.open(pyopenssl_file, "wb") as fd:
-        fd.writelines([line.encode() for line in lines])
+        fd.writelines([line.encode("utf-8") for line in lines])
 
 
 def main():

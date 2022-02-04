@@ -84,7 +84,7 @@ def main():
                     line2 = "__version__ = \"{0}\"\n".format(__version__)
                 if line2.startswith("    scriptroot =") and args.remote:
                     line2 = "    scriptroot = \"{0}\"\n".format(args.remote)
-                fd1.write(line2.encode())
+                fd1.write(line2.encode("utf-8"))
 
 
 if __name__ == "__main__":
