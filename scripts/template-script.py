@@ -39,6 +39,7 @@ __version__ = None
 
 
 def unpack(path, dest=None):
+    """Unpack a wheel file into a destination folder."""
 
     import os
     from contextlib import closing
@@ -54,12 +55,14 @@ def unpack(path, dest=None):
 
 
 def pkgdecode(text):
+    """Return an in-memory package stream from a textified version."""
 
     from base64 import b64decode
     return b64decode("".join(line.strip() for line in text.split("\n")))
 
 
 def pip_extract(pkgname, dest=None):
+    """Extract a textified package into a destination directory."""
 
     import io
     import os
@@ -81,6 +84,7 @@ def pip_extract(pkgname, dest=None):
 
 
 def pip_install(pkgname, *args):
+    """Install a package file."""
 
     import os
     import sys
@@ -115,6 +119,7 @@ def pip_install(pkgname, *args):
 
 
 def pip_autoinstall(pkgname, *args):
+    """Install a textified package."""
 
     import io
     import os
@@ -136,6 +141,7 @@ def pip_autoinstall(pkgname, *args):
 
 
 def pip_autopatch():
+    """Make `pip` patch itself to work using PyOpenSSL."""
 
     import io
     import os
@@ -188,6 +194,7 @@ def pip_autopatch():
 
 
 def main():
+    """Main script call."""
 
     import os
     import sys

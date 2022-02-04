@@ -77,6 +77,7 @@ def get_abi():
 
 
 def main():
+    """Main script call."""
 
     import os
     import re
