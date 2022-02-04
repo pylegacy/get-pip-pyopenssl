@@ -64,6 +64,7 @@ disable=
     # Specific disables of get-pip.
     duplicate-code,
     too-many-lines,
+    consider-using-with,
     # Allow freedom with imports.
     import-outside-toplevel,
     ungrouped-imports,

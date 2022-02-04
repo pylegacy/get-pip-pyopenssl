@@ -42,16 +42,19 @@ def unpack(path, dest=None):
     """Unpack a wheel file into a destination folder."""
 
     import os
-    from contextlib import closing
     from zipfile import ZipFile
 
     pkgname = os.path.basename(path).split("-")[0]
     if dest is None:
         dest = os.getcwd()
-    with closing(ZipFile(path, "r")) as archive:
+
+    archive = ZipFile(path, "r")
+    try:
         for file in archive.namelist():
             if file.startswith("{0}/".format(pkgname)):
                 archive.extract(file, dest)
+    finally:
+        archive.close()
 
 
 def pkgdecode(text):
@@ -96,6 +99,7 @@ def pip_install(pkgname, *args):
     pip_parent_dir = os.path.dirname(os.path.dirname(pip.__file__))
 
     def pip_main(*args):
+        """Internal function to deal with using `pip` main call."""
         # pip main call for pip >= 10.
         if hasattr(pip, "_internal"):
             env = os.environ.copy()

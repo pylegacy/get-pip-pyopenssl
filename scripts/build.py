@@ -19,6 +19,7 @@
 # along with get-pip-pyopenssl. If not, see <https://www.gnu.org/licenses/>.
 #
 """Script to build `get-pip-pyopenssl` distributables."""
+from __future__ import print_function
 
 
 def main():
