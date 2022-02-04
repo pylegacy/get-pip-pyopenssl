@@ -58,3 +58,25 @@ jobs:
         with:
           name: artifacts-build
           path: dist
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.REMOTE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      -
+        name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: artifacts-build
+          path: dist
+      -
+        name: Sync static site
+        run: |
+          rsync -avP dist/                                                    \
+              ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_ROOT }}/hub
