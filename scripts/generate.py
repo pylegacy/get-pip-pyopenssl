@@ -161,6 +161,10 @@ class Package(object):
         except ImportError:
             from urllib2 import urlopen
 
+        # This is just a temporarily workaround but needs a real fix.
+        import ssl
+        ssl._create_default_https_context = ssl._create_unverified_context
+
         conn = urlopen(self.pypi_project_url)
         try:
             html = conn.read().decode("utf-8")
@@ -198,29 +202,30 @@ class Package(object):
         finally:
             conn.close()
 
-    def textify(self):
+    def textify(self, indent=0):
         """Return the Python package data as plain encoded text."""
 
         if self.data is None:
             self.download()
 
         return "\n".join([
-            "\"{name}\": {{",
-            "    \"author\":",
-            "        \"{author}\",",
-            "    \"license\":",
-            "        \"{license}\",",
-            "    \"filename\":",
-            "        \"{filename}\",",
-            "    \"filedata\": \"\"\"",
+            "{indent}\"{name}\": {{",
+            "{indent}    \"author\":",
+            "{indent}        \"{author}\",",
+            "{indent}    \"license\":",
+            "{indent}        \"{license}\",",
+            "{indent}    \"filename\":",
+            "{indent}        \"{filename}\",",
+            "{indent}    \"filedata\": \"\"\"",
             "{filedata}",
-            "    \"\"\",",
-            "}},"
+            "{indent}    \"\"\",",
+            "{indent}}},"
         ]).format(name=self.name,
                   author=self.author,
                   license=self.license,
                   filename=self.filename,
-                  filedata=self.pkgencode(self.data))
+                  filedata=self.pkgencode(self.data),
+                  indent=" " * indent)
 
     @staticmethod
     def pkgencode(data, pad=0, nchars=None):
@@ -343,7 +348,7 @@ def main():
 
     pkgtext = []
     for pkg in PACKAGES:
-        pkgtext.append(pkg.textify())
+        pkgtext.append(pkg.textify(indent=4))
     injection = "\n".join(pkgtext)
 
     here = os.path.dirname(__file__)
