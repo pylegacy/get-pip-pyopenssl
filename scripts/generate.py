@@ -252,6 +252,7 @@ class Package(object):
 def main():
     """Main script function."""
 
+    import io
     import re
     import os.path
     import argparse
@@ -356,17 +357,16 @@ def main():
     template_file = os.path.join(here, "template-script.py")
     target_name = "get-pip-pyopenssl-{0}.py".format(label)
     makedirs(args.dest, exist_ok=True)
-    with open(os.path.join(args.dest, target_name), "w") as fd1:
-        with open(template_file, "r") as fd2:
+    with io.open(os.path.join(args.dest, target_name), "wb") as fd1:
+        with io.open(template_file, "r", encoding="utf-8") as fd2:
             for line2 in fd2:
                 if line2 == "#! /usr/bin/env python\n":
-                    fd1.write("#! /usr/bin/env python{0}\n".format(semver))
-                elif line2 == "__version__ = None\n":
-                    fd1.write("__version__ = \"{0}\"\n".format(__version__))
-                elif line2 == "PACKAGES = {}\n":
-                    fd1.write("PACKAGES = {{\n\n{0}\n\n}}\n".format(injection))
-                else:
-                    fd1.write(line2)
+                    line2 = "#! /usr/bin/env python{0}\n".format(semver)
+                if line2 == "__version__ = None\n":
+                    line2 = "__version__ = \"{0}\"\n".format(__version__)
+                if line2 == "PACKAGES = {}\n":
+                    line2 = "PACKAGES = {{\n\n{0}\n\n}}\n".format(injection)
+                fd1.write(line2.encode())
 
 
 if __name__ == "__main__":

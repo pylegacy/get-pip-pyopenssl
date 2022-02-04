@@ -61,6 +61,7 @@ def pkgdecode(text):
 
 def pip_extract(pkgname, dest=None):
 
+    import io
     import os
     import shutil
     import tempfile
@@ -71,7 +72,7 @@ def pip_extract(pkgname, dest=None):
         tmpdir = tempfile.mkdtemp(prefix="tmp-get-pip-extract-")
         pkgpath = os.path.join(tmpdir, pkg["filename"])
         pkgdata = pkgdecode(pkg["filedata"])
-        with open(pkgpath, "wb") as fd:
+        with io.open(pkgpath, "wb") as fd:
             fd.write(pkgdata)
         unpack(pkgpath, dest=dest)
     finally:
@@ -115,6 +116,7 @@ def pip_install(pkgname, *args):
 
 def pip_autoinstall(pkgname, *args):
 
+    import io
     import os
     import shutil
     import tempfile
@@ -125,7 +127,7 @@ def pip_autoinstall(pkgname, *args):
         tmpdir = tempfile.mkdtemp(prefix="tmp-get-pip-autoinstall-")
         pkgpath = os.path.join(tmpdir, pkg["filename"])
         pkgdata = pkgdecode(pkg["filedata"])
-        with open(pkgpath, "wb") as fd:
+        with io.open(pkgpath, "wb") as fd:
             fd.write(pkgdata)
         pip_install(pkgpath, *args)
     finally:
@@ -135,6 +137,7 @@ def pip_autoinstall(pkgname, *args):
 
 def pip_autopatch():
 
+    import io
     import os
     import pip
 
@@ -149,7 +152,7 @@ def pip_autopatch():
 
     # Force `pip` to use `pyOpenSSL`.
     lines = []
-    with open(sslimport_file, "r") as fd:
+    with io.open(sslimport_file, "r", encoding="utf-8") as fd:
         found_try = False
         for line in fd:
             if "try:" in line:
@@ -170,18 +173,18 @@ def pip_autopatch():
             else:
                 found_try = False
             lines.append(line)
-    with open(sslimport_file, "w") as fd:
-        fd.writelines(lines)
+    with io.open(sslimport_file, "wb") as fd:
+        fd.writelines([line.encode() for line in lines])
 
     # Patch issue with unicode/bytes mix in `pyopenssl`.
     lines = []
-    with open(pyopenssl_file, "r") as fd:
+    with io.open(pyopenssl_file, "r", encoding="utf-8") as fd:
         text = "return self.connection.send(data)"
         for line in fd:
             lines.append(line.replace("data", "data.encode()")
                          if text in line else line)
-    with open(pyopenssl_file, "w") as fd:
-        fd.writelines(lines)
+    with io.open(pyopenssl_file, "wb") as fd:
+        fd.writelines([line.encode() for line in lines])
 
 
 def main():
