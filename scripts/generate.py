@@ -34,7 +34,7 @@ that left `pip` unusable for the Python versions without SNI support:
     https://github.com/pypa/pypi-support/issues/978
 """
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 
 def makedirs(name, mode=511, exist_ok=False):
