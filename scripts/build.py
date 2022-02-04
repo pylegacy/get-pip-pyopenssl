@@ -28,7 +28,7 @@ def main():
     import argparse
     import itertools
     import subprocess
-    from scripts.generate import __version__
+    from generate import __version__
 
     # Define arguments.
     parser = argparse.ArgumentParser()
@@ -63,7 +63,7 @@ def main():
         print("- Building {0} for {1} {2}...".format(abi, target, arch))
         subprocess.call([
             sys.executable, "-u",
-            os.path.join(here, "scripts", "generate.py"),
+            os.path.join(here, "generate.py"),
             "--target", target,
             "--arch", arch,
             "--abi", abi,
@@ -71,7 +71,7 @@ def main():
         ])
 
     # Write out the helper script.
-    template = os.path.join(here, "scripts", "template-main.py")
+    template = os.path.join(here, "template-main.py")
     outfile = os.path.join(args.dest, "get-pip-pyopenssl.py")
     with open(outfile, "w") as fd1:
         with open(template, "r") as fd2:
