@@ -58,7 +58,7 @@ def makedirs(name, mode=511, exist_ok=False):
         raise
 
 
-class cachedproperty(property):
+class cachedproperty(property):  # pylint: disable=invalid-name
     """Property that caches its value after first calculation."""
 
     def __init__(self, fget=None, fset=None, fdel=None, doc=None):
@@ -78,7 +78,7 @@ class cachedproperty(property):
         try:
             cache = obj.__cache__
         except AttributeError:
-            obj.__cache__ = dict()
+            obj.__cache__ = {}
             cache = obj.__cache__
         try:
             return cache[self.name]
@@ -162,6 +162,7 @@ class Package(object):
             from urllib2 import urlopen
 
         # This is just a temporarily workaround but needs a real fix.
+        # pylint: disable=protected-access
         import ssl
         ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -255,7 +256,7 @@ def main():
     import os.path
     import argparse
 
-    VALID_TARGETS = {
+    valid_targets = {
         ("Windows", "32bit"):
             "win32",
         ("Windows", "64bit"):
@@ -290,7 +291,7 @@ def main():
     version = re.match(r"(cp\d+)m?u?", args.abi).groups(1)[0]
     semver = ".".join(re.match(r"cp(\d)(\d+)", version).groups())
     label = "-".join([version, args.abi,
-                      VALID_TARGETS[(args.target, args.arch)]])
+                      valid_targets[(args.target, args.arch)]])
 
     # Do not allow 'mu' implementations for Windows.
     if args.target == "Windows" and args.abi.endswith("mu"):
@@ -300,7 +301,7 @@ def main():
     if semver == "2.6":
         cffi_version = "1.10.0" if args.target == "Windows" else "1.11.2"
         crypto_version = "2.0.3" if args.target == "Windows" else "2.1.1"
-        PACKAGES = [
+        packages = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
             Package("pip-9.0.3-py2.py3-none-any.whl"),
             Package("argparse-1.4.0-py2.py3-none-any.whl"),
@@ -322,7 +323,7 @@ def main():
             Package("pyOpenSSL-16.2.0-py2.py3-none-any.whl"),
         ]
     elif semver == "2.7":
-        PACKAGES = [
+        packages = [
             # Essential packages (`pip`, `wheel` and `setuptools`).
             Package("pip-20.3.4-py2.py3-none-any.whl"),
             Package("argparse-1.4.0-py2.py3-none-any.whl"),
@@ -347,7 +348,7 @@ def main():
         raise ValueError(msg.format(args.abi, args.target, args.arch))
 
     pkgtext = []
-    for pkg in PACKAGES:
+    for pkg in packages:
         pkgtext.append(pkg.textify(indent=4))
     injection = "\n".join(pkgtext)
 

@@ -66,11 +66,15 @@ disable=
     ungrouped-imports,
     unused-wildcard-import,
     wildcard-import,
+    # Allow freedom with using deprecated modules.
+    deprecated-module,
     # Allow freedom with redefinitions.
     redefined-builtin,
     function-redefined,
     # Allow inheriting from object.
     useless-object-inheritance,
+    # Allow freedom with super calls.
+    super-with-arguments,
     # Allow assigning to returned None.
     assignment-from-no-return,
     assignment-from-none,

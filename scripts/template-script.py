@@ -108,9 +108,9 @@ def pip_install(pkgname, *args):
             warnings.simplefilter("ignore", category=InsecurePlatformWarning)
             return pip.main(list(args))
 
-    rc = pip_main("install", pkgname, *args)
-    if rc != 0:
-        raise RuntimeError("pip failed with exit code {0}".format(rc))
+    retcode = pip_main("install", pkgname, *args)
+    if retcode != 0:
+        raise RuntimeError("pip failed with exit code {0}".format(retcode))
 
 
 def pip_autoinstall(pkgname, *args):
