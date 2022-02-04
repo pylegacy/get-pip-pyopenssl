@@ -18,10 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with get-pip-pyopenssl. If not, see <https://www.gnu.org/licenses/>.
 #
+"""Script to build `get-pip-pyopenssl` distributables."""
 
 
 def main():
+    """Main script function."""
 
+    import io
     import os
     import re
     import sys
@@ -73,15 +76,14 @@ def main():
     # Write out the helper script.
     template = os.path.join(here, "template-main.py")
     outfile = os.path.join(args.dest, "get-pip-pyopenssl.py")
-    with open(outfile, "w") as fd1:
-        with open(template, "r") as fd2:
+    with io.open(outfile, "wb") as fd1:
+        with io.open(template, "r", encoding="utf-8") as fd2:
             for line2 in fd2:
                 if line2 == "__version__ = None\n":
-                    fd1.write("__version__ = \"{0}\"\n".format(__version__))
-                elif line2.startswith("    scriptroot =") and args.remote:
-                    fd1.write("    scriptroot = \"{0}\"\n".format(args.remote))
-                else:
-                    fd1.write(line2)
+                    line2 = "__version__ = \"{0}\"\n".format(__version__)
+                if line2.startswith("    scriptroot =") and args.remote:
+                    line2 = "    scriptroot = \"{0}\"\n".format(args.remote)
+                fd1.write(line2.encode())
 
 
 if __name__ == "__main__":
