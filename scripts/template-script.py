@@ -95,6 +95,7 @@ def pip_install(pkgname, *args):
     import subprocess
     import pip
     from pip._vendor.urllib3.exceptions import SNIMissingWarning
+    from pip._vendor.urllib3.exceptions import SubjectAltNameWarning
     from pip._vendor.urllib3.exceptions import InsecurePlatformWarning
     pip_parent_dir = os.path.dirname(os.path.dirname(pip.__file__))
 
@@ -106,14 +107,16 @@ def pip_install(pkgname, *args):
             env["PYTHONPATH"] = "{0}{1}{2}".format(
                 pip_parent_dir, ";" if os.name == "nt" else ":",
                 os.environ.get("PYTHONPATH", ""))
+            witems = [SNIMissingWarning, InsecurePlatformWarning, SubjectAltNameWarning]
             wflags = ["-W ignore::{0}.{1}".format(x.__module__, x.__name__)
-                      for x in [SNIMissingWarning, InsecurePlatformWarning]]
+                      for x in witems]
             return subprocess.call(
                 [sys.executable] + wflags + ["-m", "pip"] + list(args),
                 env=env)
         # pip main call for pip < 10.
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=SNIMissingWarning)
+            warnings.simplefilter("ignore", category=SubjectAltNameWarning)
             warnings.simplefilter("ignore", category=InsecurePlatformWarning)
             return pip.main(list(args))
 
