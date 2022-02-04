@@ -60,6 +60,7 @@ jobs:
           path: dist
 
   upload:
+    if: startsWith(github.event.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     steps:
