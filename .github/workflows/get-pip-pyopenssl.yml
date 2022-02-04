@@ -33,3 +33,28 @@ jobs:
         name: Run PyLint
         run: |
           if [ -x "$(command -v pylint)" ]; then pylint scripts/*.py; fi
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          ["3.6"]
+      max-parallel: 1
+      fail-fast: false
+    container: "pylegacy/python:${{ matrix.python-version }}-debian-5"
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v1
+      -
+        name: Build
+        run: |
+          python scripts/build.py --dest dist --remote https://pylegacy.org/hub
+      -
+        name: Upload build artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifacts-build
+          path: dist
